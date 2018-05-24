@@ -1,0 +1,9 @@
+#!/bin/sh
+
+CWD=$(dirname $0)
+printf 'Running profanity filter on commit message...\n'
+FOUND=$($CWD/profanity-filter "$1")
+if [ "$?" -ne 0 ]; then
+	printf "Profanity found:\n$FOUND\nAborting commit\n"
+	exit 1
+fi

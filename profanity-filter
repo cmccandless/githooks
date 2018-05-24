@@ -1,0 +1,26 @@
+#!/bin/bash
+
+CWD=$(dirname $0)
+IGNORE=$CWD/profanity.ignore
+GREP_FLAGS='-oIPrni --exclude *.pem --exclude-dir .git --exclude-dir .vscode'
+
+BLACKLIST_FILE=$CWD/swearWords.txt
+BLACKLIST="$(cat $BLACKLIST_FILE | tr [:space:] '|')"
+
+WHITELIST_FILE=$CWD/okWords.txt
+WHITELIST=$(cat $WHITELIST_FILE | tr [:space:] '|')
+
+FOUND=$(grep $GREP_FLAGS "\b($BLACKLIST)\b" "$1" | grep -iEv "$WHITELIST")
+if [ -f $IGNORE ]; then
+    for line in `cat $IGNORE`; do
+        FOUND=$(echo "$FOUND" | grep -v "$line")
+    done
+fi
+
+FOUND=$(echo "$FOUND" | grep -E '[^\r\n ]')
+if [ "$?" -ne 0 ]; then
+    exit 0
+else
+    printf "$FOUND\n"
+    exit 1
+fi
