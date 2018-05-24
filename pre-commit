@@ -2,7 +2,7 @@
 
 CWD=$(dirname $0)
 printf 'Running profanity filter on repository...\n'
-FOUND=$($CWD/profanity-filter '.')
+FOUND=$($CWD/scripts/profanity-filter '.')
 if [ "$?" -ne 0 ]; then
 	printf "Profanity found:\n$FOUND\nAborting commit\n"
 	exit 1
